@@ -1,3 +1,21 @@
+{% macro codesidebyside(path) -%}
+.pull-left[
+```elm
+{% include path %}
+```
+]
+.pull-right[
+
+<iframe class="executed" src="{{ path }}.html"></iframe>
+]
+{%- endmacro %}
+
+{% macro code(path) -%}
+```elm
+{% include path %}
+```
+{%- endmacro %}
+
 class: center, middle
 
 
@@ -26,12 +44,10 @@ class: center, middle
 ---
 
 # Basic Example
-.pull-left[
-```elm
-{% include 'code/Counter.elm' %}
-```
-]
-.pull-right[
-<iframe class="executed" src="code/Counter.elm.html"></iframe>
-]
 
+{{ codesidebyside('code/Counter.elm') }}
+
+---
+
+# Yo  there
+{{ code('code/Counter.elm') }}

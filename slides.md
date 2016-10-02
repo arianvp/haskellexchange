@@ -1,3 +1,7 @@
+
+
+
+
 class: center, middle
 
 
@@ -26,6 +30,7 @@ class: center, middle
 ---
 
 # Basic Example
+
 .pull-left[
 ```elm
 module Counter exposing (main)
@@ -33,10 +38,11 @@ import Html exposing (div, button, text)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
 
+
 --| main
 main =
-  beginnerProgram { model = 0, view = view, update = update }
-
+  beginnerProgram 
+    { model = 0, view = view, update = update }
 
 view model =
   div []
@@ -59,5 +65,41 @@ update msg model =
 ```
 ]
 .pull-right[
+
 <iframe class="executed" src="code/Counter.elm.html"></iframe>
 ]
+
+---
+
+# Yo  there
+```elm
+module Counter exposing (main)
+import Html exposing (div, button, text)
+import Html.App exposing (beginnerProgram)
+import Html.Events exposing (onClick)
+
+
+--| main
+main =
+  beginnerProgram 
+    { model = 0, view = view, update = update }
+
+view model =
+  div []
+    [ button [ onClick Decrement ] [ text "-" ]
+    , div [] [ text (toString model) ]
+    , button [ onClick Increment ] [ text "+" ]
+    ]
+
+
+type Msg = Increment | Decrement
+
+
+update msg model =
+  case msg of
+    Increment ->
+      model + 1
+
+    Decrement ->
+      model - 1
+```
