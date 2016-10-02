@@ -1,3 +1,10 @@
+{% macro codetopbot(path) -%}
+```elm
+{% include path %}
+```
+<iframe class="executed" src="{{ path }}.html"></iframe>
+
+{%- endmacro %}
 {% macro codesidebyside(path) -%}
 .pull-left[
 ```elm
@@ -15,6 +22,12 @@
 {% include path %}
 ```
 {%- endmacro %}
+
+
+
+
+
+
 
 class: center, middle
 
@@ -35,17 +48,19 @@ class: center, middle
 ---
 
 # The Elm Architecture
-.pull-left[
 * Model
 * Update
 * View
-]
 
 ---
 
 # Basic Example
 
 {{ codesidebyside('code/Counter.elm') }}
+
+---
+{{ codetopbot('code/Simple.elm') }}
+
 
 ---
 

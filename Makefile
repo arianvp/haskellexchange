@@ -8,14 +8,13 @@ default: all
 %.elm.html: %.elm
 	elm-make $^ --output=$@
 
-%: %.j2
-	j2 $^ > $@
+slides.md: slides.md.j2 $(DST)
+	j2 slides.md.j2 > slides.md
 
 
-slides: $(DST) slides.md
+slides:  slides.md
 
 all: slides slides.html
-
 
 clean:
 	rm -f code/*.elm.html

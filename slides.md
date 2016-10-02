@@ -2,6 +2,13 @@
 
 
 
+
+
+
+
+
+
+
 class: center, middle
 
 
@@ -21,11 +28,9 @@ class: center, middle
 ---
 
 # The Elm Architecture
-.pull-left[
 * Model
 * Update
 * View
-]
 
 ---
 
@@ -33,13 +38,10 @@ class: center, middle
 
 .pull-left[
 ```elm
-module Counter exposing (main)
 import Html exposing (div, button, text)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
 
-
---| main
 main =
   beginnerProgram 
     { model = 0, view = view, update = update }
@@ -51,9 +53,7 @@ view model =
     , button [ onClick Increment ] [ text "+" ]
     ]
 
-
 type Msg = Increment | Decrement
-
 
 update msg model =
   case msg of
@@ -70,16 +70,31 @@ update msg model =
 ]
 
 ---
+```elm
+import Html exposing (..)
+import Html.App exposing (beginnerProgram)
+import Html.Events exposing (onClick)
+
+const a b = b
+main =
+  beginnerProgram
+    { model = {}, view = view, update = const }
+
+view a = h1 [] [text "hello world"]
+
+
+```
+<iframe class="executed" src="code/Simple.elm.html"></iframe>
+
+
+---
 
 # Yo  there
 ```elm
-module Counter exposing (main)
 import Html exposing (div, button, text)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
 
-
---| main
 main =
   beginnerProgram 
     { model = 0, view = view, update = update }
@@ -91,9 +106,7 @@ view model =
     , button [ onClick Increment ] [ text "+" ]
     ]
 
-
 type Msg = Increment | Decrement
-
 
 update msg model =
   case msg of

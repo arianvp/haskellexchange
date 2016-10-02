@@ -1,10 +1,7 @@
-module Counter exposing (main)
 import Html exposing (div, button, text)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
 
-
---| main
 main =
   beginnerProgram 
     { model = 0, view = view, update = update }
@@ -16,9 +13,7 @@ view model =
     , button [ onClick Increment ] [ text "+" ]
     ]
 
-
 type Msg = Increment | Decrement
-
 
 update msg model =
   case msg of
