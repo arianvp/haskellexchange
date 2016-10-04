@@ -129,12 +129,30 @@ data Maybe a
   = Just a
   | Nothing
 
-maybe : (a -> b) -> b -> Maybe a -> b
+maybe :: (a -> b) -> b -> Maybe a -> b
 maybe f x (Just y) = y
 maybe f x _= x
 ```
 ]
 <br />
+.pull-left[
+```elm
+giveGreeting : String -> String
+giveGreeting name =
+  let
+    greet = name ++ ", Shalom!"
+  in
+    greet ++ greet
+```
+]
+.pull-right[
+```haskell
+giveGreetingTwice :: String -> String
+giveGreetingTwice name = greet ++ greet
+  where greet = name ++ ", Shalom!"
+```
+]
+---
 .pull-left[
 ```elm
 type alias Count = Int
