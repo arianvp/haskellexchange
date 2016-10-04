@@ -1,10 +1,9 @@
-module Counter  exposing (..)
 import Html exposing (div, button, text, Html)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
-
-type alias Model = Int
-model = 0
+main =
+  beginnerProgram 
+    { model = 0, view = view, update = update }
 
 view : Int -> Html Msg
 view model =

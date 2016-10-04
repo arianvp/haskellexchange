@@ -1,18 +1,24 @@
-module Counter  exposing (..)
 import Html exposing (div, button, text, Html)
 import Html.App exposing (beginnerProgram)
 import Html.Events exposing (onClick)
 
-type alias Model = Int
-model = 0
+main =
+  beginnerProgram 
+    { model = 0, view = view, update = update }
 
 view : Int -> Html Msg
 view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (toString model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
+  let
+    clickHandler =
+      if model <= 0
+        then []
+        else [ onClick Decrement ]
+  in
+    div []
+      [ button clickHandler [ text "-" ]
+      , div [] [ text (toString model) ]
+      , button [onClick Increment ] [ text "+" ]
+      ]
 
 type Msg = Increment | Decrement
 

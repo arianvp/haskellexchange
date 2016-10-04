@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>Counter</title><style>html,head,body { padding:0; margin:0; }
+<html><head><meta charset="UTF-8"><title>Main</title><style>html,head,body { padding:0; margin:0; }
 body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">
 (function() {
 'use strict';
@@ -7517,7 +7517,7 @@ var _elm_lang$html$Html_Events$Options = F2(
 	function (a, b) {
 		return {stopPropagation: a, preventDefault: b};
 	});
-var _user$project$Counter$update = F2(
+var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		if (_p0.ctor === 'Increment') {
@@ -7526,10 +7526,14 @@ var _user$project$Counter$update = F2(
 			return model - 1;
 		}
 	});
-var _user$project$Counter$model = 0;
-var _user$project$Counter$Decrement = {ctor: 'Decrement'};
-var _user$project$Counter$Increment = {ctor: 'Increment'};
-var _user$project$Counter$view = function (model) {
+var _user$project$Main$Decrement = {ctor: 'Decrement'};
+var _user$project$Main$Increment = {ctor: 'Increment'};
+var _user$project$Main$view = function (model) {
+	var clickHandler = (_elm_lang$core$Native_Utils.cmp(model, 0) < 1) ? _elm_lang$core$Native_List.fromArray(
+		[]) : _elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html_Events$onClick(_user$project$Main$Decrement)
+		]);
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -7538,10 +7542,7 @@ var _user$project$Counter$view = function (model) {
 			[
 				A2(
 				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Counter$Decrement)
-					]),
+				clickHandler,
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('-')
@@ -7559,7 +7560,7 @@ var _user$project$Counter$view = function (model) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Counter$Increment)
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$Increment)
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -7567,9 +7568,13 @@ var _user$project$Counter$view = function (model) {
 					]))
 			]));
 };
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{model: 0, view: _user$project$Main$view, update: _user$project$Main$update})
+};
 var Elm = {};
-Elm['Counter'] = Elm['Counter'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Counter'], 'Counter', typeof _user$project$Counter$main === 'undefined' ? null : _user$project$Counter$main);
+Elm['Main'] = Elm['Main'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
 
 if (typeof define === "function" && define['amd'])
 {
@@ -7600,4 +7605,4 @@ for (var publicModule in Elm)
 }
 
 }).call(this);
-</script></head><body><script type="text/javascript">Elm.Counter.fullscreen()</script></body></html>
+</script></head><body><script type="text/javascript">Elm.Main.fullscreen()</script></body></html>

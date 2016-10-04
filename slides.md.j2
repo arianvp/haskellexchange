@@ -1,3 +1,6 @@
+{% macro executed(path) -%}
+<iframe class="executed" src="{{ path }}.html"></iframe>
+{%- endmacro %}
 {% macro codetopbot(path) -%}
 ```elm
 {% include path %}
@@ -196,6 +199,12 @@ user1 = { user | phone = "23935" }
 ```
 ]
 ---
+# The Elm Architecture
+
+```elm
+{{ codetopbot('code/Simple.elm') }}
+```
+---
 # The Elm Architecture 
 ```elm
 type alias Model = { name : String }
@@ -210,8 +219,91 @@ update :  Msg -> Model -> Model
 
 ```
 ---
+# Basic Example - Counter
+
+{{ codesidebyside('code/CounterBasic.elm') }}
+
+---
+# Basic Example - Counter
+
+.pull-left[
+{{ code('code/CounterBasic.elm') }}
+]
+.pull-right[
+
+1. `view` can attach event handlers to DOM elements
+2. Those generate events of type `Msg`
+3. `update` gets called with `Msg` to decrement or increment counter
+4. `view` gets called to render counter. 
+]
+
+---
+# Basic Example - Counter
+.pull-left[
+```elm
+view : Int -> Html Msg
+view model =
+  let
+    clickHandler =
+      if model <= 0
+        then []
+        else [ onClick Decrement ]
+  in
+    div []
+      [ button clickHandler [ text "-" ]
+      , div [] [ text (toString model) ]
+      , button [onClick Increment ] [ text "+" ]
+      ]
+```
+]
+.pull-right[
+* When `view` gets called. potentially new handlers will be registered and old handlers deregistered
+{{ executed('code/NewCounter.elm') }}
+]
+
+---
+# beginnerProgram
+.pull-left[
+```elm
+beginnerProgram
+  : { model : model
+    , view : model -> Html msg
+    , update : msg -> model -> model
+  } -> Program Never  
+```
+]
+.pull-right[
+1. `view` can attach event handlers to DOM elements
+2. Those generate events of type `msg`
+3. `update` gets called with `msg` to decrement or increment counter
+4. `view` gets called to render counter. 
+5.  When `view` gets called. potentially new handlers will be registered and old handlers deregistered
+]
+---
+
+# Composing Components
+```elm
+Html.App.map : (submsg -> msg) -> Html submsg -> Html msg
+```
+* given a way to turn `submsg` into `msg` .
+* Will modify all event handlers to emit `msg` instead of `submsg`
+* This is the functor instance of Html! (If elm had typeclasses)
+* 
+---
+
+# Composing Components
+
+{{ code('code/Counter.elm') }}
+---
+
+# Composing Components
+
+{{ codesidebyside('code/Combine.elm') }}
+
+---
 
 # Tasks
+## Or - how do I actually make something useful in an FP language?
 * Can be sequenced and combined. 
 
 ---
@@ -219,15 +311,15 @@ update :  Msg -> Model -> Model
 
 
 ---
-# Basic Example - Counter
 
-{{ codesidebyside('code/Counter.elm') }}
+# What I miss in Elm
+
+* No Functor, Monad, Applicative . No typelcasses at all!
+* Means I can't  genenarlise patterns like `Task.andThen` and `Html.App.map`
+* This stuff is scary for beginners. But makes advanced users productive
+* I advice looking at PureScript .  Does have typeclasses
+* http://www.alexmingoia.com/purescript-pux/ 
 
 ---
-{{ codetopbot('code/Simple.elm') }}
-
-
----
-
 # Yo  there
 {{ code('code/Counter.elm') }}

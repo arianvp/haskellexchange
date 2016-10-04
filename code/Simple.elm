@@ -5,8 +5,12 @@ import Html.Events exposing (onClick)
 const a b = b
 main =
   beginnerProgram
-    { model = {}, view = view, update = const }
+    { model = {}, view = view, update = \x y -> y }
 
-view a = h1 [] [text "hello world"]
+view a =
+  div []
+    [ h1 [] [text "hello world"]
+    , p [] [text "Some text"]
+    ]
 
 
