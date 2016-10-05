@@ -9,6 +9,8 @@ type alias Model =
 
 model = { c1 = Ctr.model , c2 = Ctr.model }
 
+
+map : (submsg -> msg) -> Html submsg -> Html msg
 view model =
   span []
    [ map C1 (Ctr.view model.c1)

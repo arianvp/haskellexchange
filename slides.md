@@ -6,6 +6,7 @@
 
 
 
+
 class: center, middle
 
 
@@ -18,6 +19,7 @@ class: center, middle
 
 ---
 # Current state of web development
+* JavaScript
 *  Lots of tools
 * Lots of frameworks
 * Transpilers, compatibility layers, package managers
@@ -134,6 +136,7 @@ giveGreetingTwice name = greet ++ greet
 ```
 ]
 ---
+# Syntax deep dive
 .pull-left[
 ```elm
 type alias Count = Int
@@ -177,9 +180,9 @@ user1 = { user | phone = "23935" }
 ```
 ]
 ---
-# The Elm Architecture
+# Hello world! 
 
-```elm
+.pull-left-lg[
 ```elm
 import Html exposing (..)
 import Html.App exposing (beginnerProgram)
@@ -198,26 +201,30 @@ view a =
 
 
 ```
+]
+.pull-right-sm[
+
 <iframe class="executed" src="code/Simple.elm.html"></iframe>
+]
+
+<br />
+
+```bash
+$ npm -g install elm
+$ elm-make Hello.elm && firefox index.html
 ```
 ---
-# The Elm Architecture 
-```elm
-type alias Model = { name : String }
-init = { name = "Arian" } 
+# The Elm Architecture
 
-view : Model -> Html Msg
-view model =
-  h1 []
-    [ text model.name ]
-
-update :  Msg -> Model -> Model
-
-```
+* `Model : *` 
+* `model : Model`  the initial state
+* `Msg : *`  the type of events that can be fired by our application
+* `view : Model -> Html Msg` renders our state to screen
+* `update : Msg -> Model -> Model` The event handler that updates the state
 ---
 # Basic Example - Counter
 
-.pull-left[
+.pull-left-lg[
 ```elm
 import Html exposing (div, button, text, Html)
 import Html.App exposing (beginnerProgram)
@@ -246,7 +253,7 @@ update msg model =
       model - 1
 ```
 ]
-.pull-right[
+.pull-right-sm[
 
 <iframe class="executed" src="code/CounterBasic.elm.html"></iframe>
 ]
@@ -254,7 +261,7 @@ update msg model =
 ---
 # Basic Example - Counter
 
-.pull-left[
+.pull-left-lg[
 ```elm
 import Html exposing (div, button, text, Html)
 import Html.App exposing (beginnerProgram)
@@ -283,17 +290,21 @@ update msg model =
       model - 1
 ```
 ]
-.pull-right[
+.pull-right-sm[
 
 1. `view` can attach event handlers to DOM elements
 2. Those generate events of type `Msg`
 3. `update` gets called with `Msg` to decrement or increment counter
 4. `view` gets called to render counter. 
+
+```elm
+onClick : Msg -> Attribute Msg
+```
 ]
 
 ---
 # Basic Example - Counter
-.pull-left[
+.pull-left-lg[
 ```elm
 view : Int -> Html Msg
 view model =
@@ -310,14 +321,14 @@ view model =
       ]
 ```
 ]
-.pull-right[
+.pull-right-sm[
 * When `view` gets called. potentially new handlers will be registered and old handlers deregistered
 <iframe class="executed" src="code/NewCounter.elm.html"></iframe>
 ]
 
 ---
 # beginnerProgram
-.pull-left[
+.pull-left-lg[
 ```elm
 beginnerProgram
   : { model : model
@@ -326,23 +337,49 @@ beginnerProgram
   } -> Program Never  
 ```
 ]
-.pull-right[
+.pull-right-sm[
 1. `view` can attach event handlers to DOM elements
 2. Those generate events of type `msg`
 3. `update` gets called with `msg` to decrement or increment counter
 4. `view` gets called to render counter. 
 5.  When `view` gets called. potentially new handlers will be registered and old handlers deregistered
-]
----
 
-# Composing Components
+]
+
+
+---
+# How does this work?
+* Isn't rerendering on every state change expensive?
+
+--
+* No: `Html Msg` is a _virtual document_.
+* Is diffed against the previous virtual document
+* Diff is a minimal set of instructions to update the actual dom
+
+.pull-left[
 ```elm
-Html.App.map : (submsg -> msg) -> Html submsg -> Html msg
+div [ class "yo"]
+  [ h1 [] [ text "there" ]]
+
 ```
-* given a way to turn `submsg` into `msg` .
-* Will modify all event handlers to emit `msg` instead of `submsg`
-* This is the functor instance of Html! (If elm had typeclasses)
-* 
+]
+.pull-right[
+```elm
+  div [ class "abc" ]
+    [ h1 [] [ text "stuff" ]]
+```
+]
+
+<br />
+```javascript
+div$1.setClass("abc");
+h1$1.innerHTML = "stuff";
+```
+
+* This is an implementation detail. We don't care
+* We just return the entire document, and elm figures out how to update the
+actual dom efficiently
+
 ---
 
 # Composing Components
@@ -378,8 +415,18 @@ update msg model =
 ---
 
 # Composing Components
+```elm
+Html.App.map : (submsg -> msg) -> Html submsg -> Html msg
+```
+* given a way to turn `submsg` into `msg` .
+* Will modify all event handlers to emit `msg` instead of `submsg`
+* This is the functor instance of Html! (If elm had typeclasses)
+* 
+---
 
-.pull-left[
+# Composing Components
+
+.pull-left-lg[
 ```elm
 import Html exposing (span, Html)
 import Html.App exposing (map, beginnerProgram)
@@ -408,16 +455,28 @@ update msg model =
       { model | c2 = Ctr.update m2 model.c2 }
 ```
 ]
-.pull-right[
+.pull-right-sm[
 
 <iframe class="executed" src="code/Combine.elm.html"></iframe>
 ]
 
+--
+
+
+# And now?
+* We can now make simple applications in elm..
+* But how do we do useful stuff?
+* We want to do HTTP requests
+* Get the current time
+* ... etc
+*
+
+
 ---
 
-# Tasks
-## Or - how do I actually make something useful in an FP language?
-* Can be sequenced and combined. 
+# Cmds & Tasks
+*
+
 
 ---
 # Subscriptions

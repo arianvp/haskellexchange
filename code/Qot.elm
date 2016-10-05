@@ -6,7 +6,13 @@ import Time exposing (Time)
 import Json.Decode exposing (..)
 import Http 
 import Task
-import Debug
+
+main = program
+  { init = init
+  , update = update
+  , view = view
+  , subscriptions = subscriptions
+  }
 
 type alias Quote = String
 
@@ -21,42 +27,31 @@ decodeQuote = decodeString quoteDecoder
 
 getQuote  : Cmd Msg
 getQuote  =
-  let
+  let url = "http://api.icndb.com/jokes/random"
+  in Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
 
-    url = "http://api.icndb.com/jokes/random"
-  in
-      Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
-
-
-init = ({qot =  "yo i am a joke"}
-       , Cmd.none)
-
-main = program
-  { init = init
-  , update = update
-  , view = view
-  , subscriptions = subscriptions
-  }
+init = ({qot = "yo i am a joke"} , Cmd.none)
 
 type Msg 
   = GetNewQuote
   | GotNewQuote Quote
   | Fail Http.Error
 
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg mdl =
   case msg of
     GetNewQuote ->
-      Debug.log "get new quote" (mdl, getQuote)
-
+      (mdl, getQuote)
     GotNewQuote quote ->
-      Debug.log "got new quote" ({ mdl | qot = quote }, Cmd.none)
+      ({ mdl | qot = quote }, Cmd.none)
     Fail error ->
       (mdl, Cmd.none)
 
-
+subscriptions : Model -> Sub Msg
 subscriptions model =
   Time.every (3*Time.second) (\_ -> GetNewQuote)
 
+view : Model -> Html Msg
 view model =
   div []
     [ blockquote [style [("background-color", "#AAA")]]

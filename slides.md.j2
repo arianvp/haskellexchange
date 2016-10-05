@@ -20,6 +20,17 @@
 ]
 {%- endmacro %}
 
+{% macro codesidebysidel(path) -%}
+.pull-left-lg[
+```elm
+{% include path %}
+```
+]
+.pull-right-sm[
+
+<iframe class="executed" src="{{ path }}.html"></iframe>
+]
+{%- endmacro %}
 {% macro code(path) -%}
 ```elm
 {% include path %}
@@ -40,6 +51,7 @@ class: center, middle
 
 ---
 # Current state of web development
+* JavaScript
 *  Lots of tools
 * Lots of frameworks
 * Transpilers, compatibility layers, package managers
@@ -156,6 +168,7 @@ giveGreetingTwice name = greet ++ greet
 ```
 ]
 ---
+# Syntax deep dive
 .pull-left[
 ```elm
 type alias Count = Int
@@ -199,47 +212,50 @@ user1 = { user | phone = "23935" }
 ```
 ]
 ---
+# Hello world! 
+
+{{ codesidebysidel('code/Simple.elm') }}
+
+<br />
+
+```bash
+$ npm -g install elm
+$ elm-make Hello.elm && firefox index.html
+```
+---
 # The Elm Architecture
 
-```elm
-{{ codetopbot('code/Simple.elm') }}
-```
----
-# The Elm Architecture 
-```elm
-type alias Model = { name : String }
-init = { name = "Arian" } 
-
-view : Model -> Html Msg
-view model =
-  h1 []
-    [ text model.name ]
-
-update :  Msg -> Model -> Model
-
-```
+* `Model : *` 
+* `model : Model`  the initial state
+* `Msg : *`  the type of events that can be fired by our application
+* `view : Model -> Html Msg` renders our state to screen
+* `update : Msg -> Model -> Model` The event handler that updates the state
 ---
 # Basic Example - Counter
 
-{{ codesidebyside('code/CounterBasic.elm') }}
+{{ codesidebysidel('code/CounterBasic.elm') }}
 
 ---
 # Basic Example - Counter
 
-.pull-left[
+.pull-left-lg[
 {{ code('code/CounterBasic.elm') }}
 ]
-.pull-right[
+.pull-right-sm[
 
 1. `view` can attach event handlers to DOM elements
 2. Those generate events of type `Msg`
 3. `update` gets called with `Msg` to decrement or increment counter
 4. `view` gets called to render counter. 
+
+```elm
+onClick : Msg -> Attribute Msg
+```
 ]
 
 ---
 # Basic Example - Counter
-.pull-left[
+.pull-left-lg[
 ```elm
 view : Int -> Html Msg
 view model =
@@ -256,14 +272,14 @@ view model =
       ]
 ```
 ]
-.pull-right[
+.pull-right-sm[
 * When `view` gets called. potentially new handlers will be registered and old handlers deregistered
 {{ executed('code/NewCounter.elm') }}
 ]
 
 ---
 # beginnerProgram
-.pull-left[
+.pull-left-lg[
 ```elm
 beginnerProgram
   : { model : model
@@ -272,13 +288,54 @@ beginnerProgram
   } -> Program Never  
 ```
 ]
-.pull-right[
+.pull-right-sm[
 1. `view` can attach event handlers to DOM elements
 2. Those generate events of type `msg`
 3. `update` gets called with `msg` to decrement or increment counter
 4. `view` gets called to render counter. 
 5.  When `view` gets called. potentially new handlers will be registered and old handlers deregistered
+
 ]
+
+
+---
+# How does this work?
+* Isn't rerendering on every state change expensive?
+
+--
+* No: `Html Msg` is a _virtual document_.
+* Is diffed against the previous virtual document
+* Diff is a minimal set of instructions to update the actual dom
+
+.pull-left[
+```elm
+div [ class "yo"]
+  [ h1 [] [ text "there" ]]
+
+```
+]
+.pull-right[
+```elm
+  div [ class "abc" ]
+    [ h1 [] [ text "stuff" ]]
+```
+]
+
+<br />
+```javascript
+div$1.setClass("abc");
+h1$1.innerHTML = "stuff";
+```
+
+* This is an implementation detail. We don't care
+* We just return the entire document, and elm figures out how to update the
+actual dom efficiently
+
+---
+
+# Composing Components
+
+{{ code('code/Counter.elm') }}
 ---
 
 # Composing Components
@@ -293,18 +350,25 @@ Html.App.map : (submsg -> msg) -> Html submsg -> Html msg
 
 # Composing Components
 
-{{ code('code/Counter.elm') }}
+{{ codesidebysidel('code/Combine.elm') }}
+
+--
+
+
+# And now?
+* We can now make simple applications in elm..
+* But how do we do useful stuff?
+* We want to do HTTP requests
+* Get the current time
+* ... etc
+*
+
+
 ---
 
-# Composing Components
+# Cmds & Tasks
+*
 
-{{ codesidebyside('code/Combine.elm') }}
-
----
-
-# Tasks
-## Or - how do I actually make something useful in an FP language?
-* Can be sequenced and combined. 
 
 ---
 # Subscriptions
