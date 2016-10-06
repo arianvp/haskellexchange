@@ -374,6 +374,7 @@ type Cmd msg
 ```
 * A command tells Elm " Hey I want to do stuff!"
 * "Hey, I want to perform an HTTP Request"
+* "Hey, what is the current datE?"
 * "Hey, I want a random number"
 
 ```elm
@@ -384,20 +385,117 @@ none : Cmd msg
 ---
 # Cmds
 
-* We extend our _program_ type such that `update` can
+
+* We extend our _program_ such that `update` can
 create commands next to updating the state.
 
 ```elm
-update : Msg -> Model -> (Model, Cmd)
-```
+init : (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg)
 
-For the Haskeller:
-```elm
-ReaderT Msg (StateT Cmd Model)
+program
+    :  { init : (model, Cmd msg)
+       , update : msg -> model -> (model, Cmd msg)
+       , subscriptions : model -> Sub msg
+       , view : model -> Html msg }
+    -> Program Never
 ```
 
 ---
+# Cmds
+{{ codesidebysidel('code/RandomEx.elm') }}
+
+
+---
+# HTTP
+## Tasks
+* A task is a Cmd that can potentially fail
+
+```elm
+perform : (x -> msg) -> (a -> msg) -> Task x a -> Cmd msg
+--         ^             ^
+--         |             |
+--        if fail       if success
+
+```
+
+```elm
+HTTP.get : Json.Decoder value -> String -> Task Error value
+```
+
+---
+# Lets build a Quote of the Day app
+
+`http://api.icndb.com/jokes/random`
+```json
+{ 
+  "type": "success",
+  "value": {
+    "id": 138,
+    "joke": "Chuck Norris can slam a revolving door.",
+    "categories": [] 
+  }
+}
+```
+
+```elm
+qotDecoder : Json.Decoder String
+qotDecoder = Json.at ["value", "joke"]
+```
+
+---
+# Lets build a Quote of the Day app
+
+```elm
+
+type alias Quote = String
+type alias Model = 
+ { qot : Quote }
+
+
+type Msg 
+  = GetNewQuote
+  | GotNewQuote Quote
+  | Fail Http.Error
+
+getQuote : Cmd Msg
+getQuote =
+  let url = "http://api.icndb.com/jokes/random"
+  in Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
+
+```
+---
+# Lets build a Quote of the Day app
+
+.pull-left-lg[
+```elm
+init : (Model, Cmd Msg)
+init = ({qot=""}, getQuote)
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg mdl =
+  case msg of
+    GetNewQuote -> (mdl, getQuote)
+    GotNewQuote qot' -> { mdl | qot = qot' }
+
+    
+view : Model -> Html Msg
+view model =
+  div []
+    [ blockquote [style [("background-color", "#AAA")]]
+      [ text model.qot
+      ]
+    , button [onClick GetNewQuote] [ text "hey" ]
+    ]
+```
+]
+.pull-right-sm[
+{{ executed('code/QotLol.elm') }}
+]
+
+---
 # Subscriptions
+{{ executed('code/Clock.elm') }}
 
 
 ---

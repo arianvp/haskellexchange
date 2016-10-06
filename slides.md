@@ -477,12 +477,13 @@ update msg model =
 
 ---
 
-# Cmds & Tasks
+# Cmds
 ```elm
 type Cmd msg
 ```
-* A command tells Elm " Hey I want to do thign"
+* A command tells Elm " Hey I want to do stuff!"
 * "Hey, I want to perform an HTTP Request"
+* "Hey, what is the current datE?"
 * "Hey, I want a random number"
 
 ```elm
@@ -490,9 +491,153 @@ map : (a -> msg) -> Cmd a -> Cmd msg
 none : Cmd msg
 ```
 
+---
+# Cmds
+
+
+* We extend our _program_ such that `update` can
+create commands next to updating the state.
+
+```elm
+init : (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg)
+
+program
+    :  { init : (model, Cmd msg)
+       , update : msg -> model -> (model, Cmd msg)
+       , subscriptions : model -> Sub msg
+       , view : model -> Html msg }
+    -> Program Never
+```
+
+---
+# Cmds
+.pull-left-lg[
+```elm
+import Random exposing (int, generate)
+import Html.App exposing (program)
+import Html exposing (..)
+import Html.Events exposing (..)
+
+main = program { init = init, view = view, update = update, subscriptions = \_ -> Sub.none}
+
+random : Cmd Msg
+random = generate GotNewRandom (int 0 10)
+
+init : (Int, Cmd Msg)
+init = (0, random)
+
+type Msg
+  = NewRandom
+  | GotNewRandom Int
+
+update msg x =
+  case msg of
+    NewRandom -> (x, random)
+    GotNewRandom x' -> (x', Cmd.none)
+
+view x = 
+  div [] [button [onClick NewRandom] [text "newrandom"]
+         ,text (toString x) ]
+   
+```
+]
+.pull-right-sm[
+
+<iframe class="executed" src="code/RandomEx.elm.html"></iframe>
+]
+
+
+---
+# HTTP
+## Tasks
+* A task is a Cmd that can potentially fail
+
+```elm
+perform : (x -> msg) -> (a -> msg) -> Task x a -> Cmd msg
+--         ^             ^
+--         |             |
+--        if fail       if success
+
+```
+
+```elm
+HTTP.get : Json.Decoder value -> String -> Task Error value
+```
+
+---
+# Lets build a Quote of the Day app
+
+`http://api.icndb.com/jokes/random`
+```json
+{ 
+  "type": "success",
+  "value": {
+    "id": 138,
+    "joke": "Chuck Norris can slam a revolving door.",
+    "categories": [] 
+  }
+}
+```
+
+```elm
+qotDecoder : Json.Decoder String
+qotDecoder = Json.at ["value", "joke"]
+```
+
+---
+# Lets build a Quote of the Day app
+
+```elm
+
+type alias Quote = String
+type alias Model = 
+ { qot : Quote }
+
+
+type Msg 
+  = GetNewQuote
+  | GotNewQuote Quote
+  | Fail Http.Error
+
+getQuote : Cmd Msg
+getQuote =
+  let url = "http://api.icndb.com/jokes/random"
+  in Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
+
+```
+---
+# Lets build a Quote of the Day app
+
+.pull-left-lg[
+```elm
+init : (Model, Cmd Msg)
+init = ({qot=""}, getQuote)
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg mdl =
+  case msg of
+    GetNewQuote -> (mdl, getQuote)
+    GotNewQuote qot' -> { mdl | qot = qot' }
+
+    
+view : Model -> Html Msg
+view model =
+  div []
+    [ blockquote [style [("background-color", "#AAA")]]
+      [ text model.qot
+      ]
+    , button [onClick GetNewQuote] [ text "hey" ]
+    ]
+```
+]
+.pull-right-sm[
+<iframe class="executed" src="code/QotLol.elm.html"></iframe>
+]
 
 ---
 # Subscriptions
+<iframe class="executed" src="code/Clock.elm.html"></iframe>
 
 
 ---
