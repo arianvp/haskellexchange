@@ -219,8 +219,8 @@ $ elm-make Hello.elm && firefox index.html
 * `Model : *` 
 * `model : Model`  the initial state
 * `Msg : *`  the type of events that can be fired by our application
-* `view : Model -> Html Msg` renders our state to screen
 * `update : Msg -> Model -> Model` The event handler that updates the state
+* `view : Model -> Html Msg` renders our state to screen
 ---
 # Basic Example - Counter
 
@@ -359,14 +359,14 @@ beginnerProgram
 .pull-left[
 ```elm
 div [ class "yo"]
-  [ h1 [] [ text "there" ]]
+  [ h1 [onClick Greet] [ text "there" ]]
 
 ```
 ]
 .pull-right[
 ```elm
   div [ class "abc" ]
-    [ h1 [] [ text "stuff" ]]
+    [ h1 [onClick Bye] [ text "stuff" ]]
 ```
 ]
 
@@ -374,6 +374,8 @@ div [ class "yo"]
 ```javascript
 div$1.setClass("abc");
 h1$1.innerHTML = "stuff";
+h1.eventHandlers.deregister("onclick", Greet_onclickhandler);
+h1.eventHandlers.register("onclick", Bye_onclickhandler);
 ```
 
 * This is an implementation detail. We don't care
@@ -439,6 +441,7 @@ type alias Model =
 
 model = { c1 = Ctr.model , c2 = Ctr.model }
 
+
 view model =
   span []
    [ map C1 (Ctr.view model.c1)
@@ -460,7 +463,7 @@ update msg model =
 <iframe class="executed" src="code/Combine.elm.html"></iframe>
 ]
 
---
+---
 
 
 # And now?
@@ -475,7 +478,17 @@ update msg model =
 ---
 
 # Cmds & Tasks
-*
+```elm
+type Cmd msg
+```
+* A command tells Elm " Hey I want to do thign"
+* "Hey, I want to perform an HTTP Request"
+* "Hey, I want a random number"
+
+```elm
+map : (a -> msg) -> Cmd a -> Cmd msg
+none : Cmd msg
+```
 
 
 ---

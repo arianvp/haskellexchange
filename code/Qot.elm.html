@@ -8703,21 +8703,15 @@ var _user$project$Main$update = F2(
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'GetNewQuote':
-				return A2(
-					_elm_lang$core$Debug$log,
-					'get new quote',
-					{ctor: '_Tuple2', _0: mdl, _1: _user$project$Main$getQuote});
+				return {ctor: '_Tuple2', _0: mdl, _1: _user$project$Main$getQuote};
 			case 'GotNewQuote':
-				return A2(
-					_elm_lang$core$Debug$log,
-					'got new quote',
-					{
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							mdl,
-							{qot: _p0._0}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						mdl,
+						{qot: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				return {ctor: '_Tuple2', _0: mdl, _1: _elm_lang$core$Platform_Cmd$none};
 		}
