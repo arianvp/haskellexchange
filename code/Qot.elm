@@ -30,7 +30,7 @@ getQuote  =
   let url = "http://api.icndb.com/jokes/random"
   in Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
 
-init = ({qot = "yo i am a joke"} , Cmd.none)
+init = ({qot = ""} , Cmd.none)
 
 type Msg 
   = GetNewQuote

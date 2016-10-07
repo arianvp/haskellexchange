@@ -13,6 +13,7 @@ class: center, middle
 # Building Single Page Applications in Elm 
 ## Arian Van Putten
 ### Haskell Exchange 2016
+#### @ProgrammerDude / https://arianvp.me / https://github.com/arianvp
 
 
 ---
@@ -509,7 +510,8 @@ program
        , view : model -> Html msg }
     -> Program Never
 ```
-
+* A command then is executed asynchronously, and will call
+  `update` as the callback with the `msg` that `Cmd` produced
 ---
 # Cmds
 .pull-left-lg[
@@ -618,7 +620,8 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg mdl =
   case msg of
     GetNewQuote -> (mdl, getQuote)
-    GotNewQuote qot' -> { mdl | qot = qot' }
+    GotNewQuote qot' -> ({ mdl | qot = qot' }, Cmd.none)
+    Fail error -> ({ mdl | qot = ''}, Cmd.none)
 
     
 view : Model -> Html Msg
@@ -637,7 +640,69 @@ view model =
 
 ---
 # Subscriptions
+* A way to subscribe to a stream of `Msg`s
+* Mouse movements
+* Websockets
+* Time
+
+
+---
+# Subscriptions
+```elm
+type Sub msg
+
+map : (a -> msg) -> Sub a -> Sub msg
+batch : List (sub msg) -> Sub msg
+none : Sub msg
+none = batch []
+
+```
+---
+
+# A clock
+```elm
+
+Time.every : Time -> (Time -> msg) -> Sub msg
+Date.fromTime : Time -> Date
+
+type Msg = Tick Date
+
+update msg model =
+  case msg of
+    Tick newDate -> (newDate, Cmd.none)
+
+subscriptions : Sub Msg
+subscriptions = Time.every Time.second (\x -> Tick (Date.fromTime x))
+```
+---
+# A clock
+
+.pull-left-lg[
+```elm
+makeHand inunit time max size =
+  let angle = (degrees (toFloat (inunit time) * (360.0 / max))) - degrees 90.0
+      handX = toString (50 + size * cos angle)
+      handY = toString (50 + size * sin angle)
+  in (handX, handY)
+
+view : Model -> Html Msg
+view time =
+  let (handXS, handYS) = makeHand second time 60 42
+      (handXM, handYM) = makeHand minute time 60 38
+      (handXH, handYH) = makeHand hour time 12 30
+  in Svg.svg [ viewBox "0 0 100 100", width "300px" ]
+      [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
+      , line [ x1 "50", y1 "50", x2 handXH, y2 handYH, stroke "#023963" ] []
+      , line [ x1 "50", y1 "50", x2 handXM, y2 handYM, stroke "#023963" ] []
+      , line [ x1 "50", y1 "50", x2 handXS, y2 handYS, stroke "#FFF"
+             , strokeWidth "0.5" ] []
+      ]
+```
+]
+
+.pull-right-sm[
 <iframe class="executed" src="code/Clock.elm.html"></iframe>
+]
 
 
 ---
@@ -651,32 +716,3 @@ view model =
 * http://www.alexmingoia.com/purescript-pux/ 
 
 ---
-# Yo  there
-```elm
-module Counter  exposing (..)
-import Html exposing (div, button, text, Html)
-import Html.App exposing (beginnerProgram)
-import Html.Events exposing (onClick)
-
-type alias Model = Int
-model = 0
-
-view : Int -> Html Msg
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (toString model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
-
-type Msg = Increment | Decrement
-
-update : Msg -> Int -> Int
-update msg model =
-  case msg of
-    Increment ->
-      model + 1
-
-    Decrement ->
-      model - 1
-```
