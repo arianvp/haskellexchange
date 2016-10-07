@@ -19,7 +19,7 @@ quoteDecoder =
 
 getQuote  : Cmd Msg
 getQuote  =
-  let url = "http://api.icndb.com/jokes/random"
+  let url = "https://api.icndb.com/jokes/random"
   in Task.perform Fail GotNewQuote (Http.get quoteDecoder url)
 
 init = ({qot = ""} , Cmd.none)
