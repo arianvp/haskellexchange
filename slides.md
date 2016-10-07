@@ -484,7 +484,7 @@ type Cmd msg
 ```
 * A command tells Elm " Hey I want to do stuff!"
 * "Hey, I want to perform an HTTP Request"
-* "Hey, what is the current datE?"
+* "Hey, what is the current date?"
 * "Hey, I want a random number"
 
 ```elm
